@@ -10,6 +10,7 @@ class Gum
      */
     public static function choose($options)
     {
+        $options = array_map(function($arg) { return escapeshellarg($arg); }, $options);
         return self::call('choose '.implode(' ', $options));
     }
 
