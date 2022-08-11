@@ -1,0 +1,48 @@
+{
+    "name": "adamgaskins/php-gum",
+    "description": "A php wrapper for Gum: a tool for glamorous shell scripts 🎀",
+    "keywords": [
+        "AdamGaskins",
+        "php-gum"
+    ],
+    "homepage": "https://github.com/adamgaskins/php-gum",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adam Gaskins",
+            "email": "adam@gaskins.dev",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.1",
+        "pestphp/pest": "^1.20",
+        "pestphp/pest-plugin-mock": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpGum\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpGum\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
