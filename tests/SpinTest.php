@@ -3,12 +3,12 @@
 use PhpGum\Gum;
 use PhpGum\System;
 
-beforeEach(function() {
+beforeEach(function () {
     $this->foreverScript = '-- php -r "while(true) sleep(100);"';
 });
 
 it('can spin', function () {
-    $mock = mock('alias:' . System::class);
+    $mock = mock('alias:'.System::class);
     $mock->shouldReceive('proc_open')
         ->withSomeOfArgs("gum spin {$this->foreverScript}")
         ->andReturns('');
@@ -17,7 +17,7 @@ it('can spin', function () {
 });
 
 it('can spin with title', function () {
-    $mock = mock('alias:' . System::class);
+    $mock = mock('alias:'.System::class);
     $mock->shouldReceive('proc_open')
         ->withSomeOfArgs("gum spin --title='This is my loading message...' {$this->foreverScript}")
         ->andReturns('');
@@ -26,7 +26,7 @@ it('can spin with title', function () {
 });
 
 it('can spin with spinner', function () {
-    $mock = mock('alias:' . System::class);
+    $mock = mock('alias:'.System::class);
     $mock->shouldReceive('proc_open')
         ->withSomeOfArgs("gum spin --spinner='monkey' {$this->foreverScript}")
         ->andReturns('');

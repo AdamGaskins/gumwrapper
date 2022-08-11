@@ -6,7 +6,7 @@ use PhpGum\System;
 it('can confirm', function () {
     $mock = mock('alias:'.System::class);
     $mock->shouldReceive('exec')
-        ->withSomeOfArgs("gum confirm")
+        ->withSomeOfArgs('gum confirm')
         ->andReturns('');
 
     (new Gum)->confirm();
@@ -18,7 +18,7 @@ it('can confirm with message', function () {
         ->withSomeOfArgs("gum confirm 'Are you sure?'")
         ->andReturns('');
 
-    (new Gum)->confirm("Are you sure?");
+    (new Gum)->confirm('Are you sure?');
 });
 
 it('can confirm with message and custom labels', function () {
@@ -27,7 +27,7 @@ it('can confirm with message and custom labels', function () {
         ->withSomeOfArgs("gum confirm 'Are you sure?' --affirmative 'Yeah' --negative 'Nah'")
         ->andReturns('');
 
-    (new Gum)->confirm("Are you sure?", "Yeah", "Nah");
+    (new Gum)->confirm('Are you sure?', 'Yeah', 'Nah');
 });
 
 it('can confirm with message and custom labels and default', function () {
@@ -36,5 +36,5 @@ it('can confirm with message and custom labels and default', function () {
         ->withSomeOfArgs("gum confirm 'Are you sure?' --affirmative 'Yeah' --negative 'Nah' --default=0")
         ->andReturns('');
 
-    (new Gum)->confirm("Are you sure?", "Yeah", "Nah", false);
+    (new Gum)->confirm('Are you sure?', 'Yeah', 'Nah', false);
 });

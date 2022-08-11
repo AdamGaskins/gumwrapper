@@ -6,6 +6,7 @@ namespace PhpGum;
 class Spinner
 {
     protected $resource;
+
     public function __construct($resource)
     {
         $this->resource = $resource;

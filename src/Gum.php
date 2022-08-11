@@ -14,16 +14,18 @@ class Gum
      */
     public static function choose($options, $limit = null, $height = null)
     {
-        $options = array_map(function($arg) { return escapeshellarg($arg); }, $options);
+        $options = array_map(function ($arg) {
+        return escapeshellarg($arg);
+        }, $options);
 
         $command = [self::executable(), 'choose'];
 
         if ($limit !== null) {
-            $command[] = $limit < 1 ? '--no-limit' : ('--limit ' . intval($limit));
+            $command[] = $limit < 1 ? '--no-limit' : ('--limit '.intval($limit));
         }
 
         if ($height !== null) {
-            $command[] = '--height ' . intval($height);
+            $command[] = '--height '.intval($height);
         }
 
         $command[] = implode(' ', $options);
@@ -47,15 +49,15 @@ class Gum
         }
 
         if ($affirmativeText !== null) {
-            $command[] = '--affirmative ' . escapeshellarg($affirmativeText);
+            $command[] = '--affirmative '.escapeshellarg($affirmativeText);
         }
 
         if ($negativeText !== null) {
-            $command[] = '--negative ' . escapeshellarg($negativeText);
+            $command[] = '--negative '.escapeshellarg($negativeText);
         }
 
         if ($default !== null) {
-            $command[] = '--default='.(!!$default ? '1' : '0');
+            $command[] = '--default='.((bool) $default ? '1' : '0');
         }
 
         $output = [];
@@ -70,7 +72,7 @@ class Gum
         $command = [self::executable(), 'spin'];
 
         if ($title !== null) {
-            $command[] = '--title=' . escapeshellarg($title);
+            $command[] = '--title='.escapeshellarg($title);
         }
 
         if ($spinner !== null) {
@@ -78,7 +80,7 @@ class Gum
                 throw new Exception('Invalid spinner: ' + $spinner);
             }
 
-            $command[] = '--spinner=' . escapeshellarg($spinner);
+            $command[] = '--spinner='.escapeshellarg($spinner);
         }
 
         $command[] = '-- php -r "while(true) sleep(100);"';
@@ -89,11 +91,11 @@ class Gum
         return new Spinner($r);
     }
 
-
     protected static $executable = null;
+
     protected static function executable()
     {
-        return static::$executable ?? (__DIR__ . '/../lib/gum/darwin/gum');
+        return static::$executable ?? (__DIR__.'/../lib/gum/darwin/gum');
     }
 
     public static function useExecutable($path)
