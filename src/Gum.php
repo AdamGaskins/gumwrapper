@@ -2,6 +2,8 @@
 
 namespace PhpGum;
 
+use Exception;
+
 class Gum
 {
     /**
@@ -14,7 +16,7 @@ class Gum
     {
         $options = array_map(function($arg) { return escapeshellarg($arg); }, $options);
 
-        $command = ['choose'];
+        $command = [self::executable(), 'choose'];
 
         if ($limit !== null) {
             $command[] = $limit < 1 ? '--no-limit' : ('--limit ' . intval($limit));
@@ -26,7 +28,7 @@ class Gum
 
         $command[] = implode(' ', $options);
 
-        return self::call(implode(' ', $command));
+        return System::exec(implode(' ', $command));
     }
 
     /**
@@ -38,7 +40,7 @@ class Gum
      */
     public static function confirm($prompt = null, $affirmativeText = null, $negativeText = null, $default = null)
     {
-        $command = ['confirm'];
+        $command = [self::executable(), 'confirm'];
 
         if ($prompt !== null) {
             $command[] = escapeshellarg($prompt);
@@ -56,17 +58,46 @@ class Gum
             $command[] = '--default='.(!!$default ? '1' : '0');
         }
 
-        self::call(implode(' ', $command), $output, $resultCode);
+        $output = [];
+        $resultCode = null;
+        System::exec(implode(' ', $command), $output, $resultCode);
 
         return $resultCode === 0;
     }
 
-    /**
-     * @param  string  $arguments
-     * @return string|false
-     */
-    protected static function call($arguments = '', &$output = null, &$resultCode = null): string|false
+    public static function spin(string $title = null, string $spinner = null)
     {
-        return System::exec('gum '.$arguments, $output, $resultCode);
+        $command = [self::executable(), 'spin'];
+
+        if ($title !== null) {
+            $command[] = '--title=' . escapeshellarg($title);
+        }
+
+        if ($spinner !== null) {
+            if (! in_array($spinner, ['line', 'dot', 'minidot', 'jump', 'pulse', 'points', 'globe', 'moon', 'monkey', 'meter', 'hamburger'])) {
+                throw new Exception('Invalid spinner: ' + $spinner);
+            }
+
+            $command[] = '--spinner=' . escapeshellarg($spinner);
+        }
+
+        $command[] = '-- php -r "while(true) sleep(100);"';
+
+        $pipes = [];
+        $r = System::proc_open(implode(' ', $command), [STDIN, STDOUT, STDOUT], $pipes);
+
+        return new Spinner($r);
+    }
+
+
+    protected static $executable = null;
+    protected static function executable()
+    {
+        return static::$executable ?? (__DIR__ . '/../lib/gum/darwin/gum');
+    }
+
+    public static function useExecutable($path)
+    {
+        static::$executable = $path;
     }
 }
