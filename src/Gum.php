@@ -12,7 +12,7 @@ class Gum
      * @param  int|null  $height
      * @return string|false
      */
-    public static function choose($options, $limit = null, $height = null)
+    public static function choose($options, int $limit = null, int $height = null)
     {
         $options = array_map(function ($arg) {
         return escapeshellarg($arg);
@@ -30,7 +30,10 @@ class Gum
 
         $command[] = implode(' ', $options);
 
-        return System::exec(implode(' ', $command));
+        $output = [];
+        $returnCode = null;
+        $result = System::exec(implode(' ', $command), $output, $returnCode);
+        return $returnCode === 0 ? $result : false;
     }
 
     /**
@@ -40,7 +43,7 @@ class Gum
      * @param  bool|null  $default
      * @return bool
      */
-    public static function confirm($prompt = null, $affirmativeText = null, $negativeText = null, $default = null)
+    public static function confirm(string $prompt = null, string $affirmativeText = null, string $negativeText = null, bool $default = null)
     {
         $command = [self::executable(), 'confirm'];
 
@@ -65,6 +68,50 @@ class Gum
         System::exec(implode(' ', $command), $output, $resultCode);
 
         return $resultCode === 0;
+    }
+
+    /**
+     * @param  string|null  $placeholder
+     * @param  string|null  $prompt
+     * @param  string|null  $initialValue
+     * @param  int|null  $charLimit
+     * @param  int|null  $width
+     * @param  bool|null  $password
+     * @return string|false
+     */
+    public static function input(string $placeholder = null, string $prompt = null, string $initialValue = null, int $charLimit = null, int $width = null, bool $password = null)
+    {
+        $command = [self::executable(), 'input'];
+
+        if ($placeholder !== null) {
+            $command[] = '--placeholder='.escapeshellarg($placeholder);
+        }
+
+        if ($prompt !== null) {
+            $command[] = '--prompt='.escapeshellarg($prompt);
+        }
+
+        if ($initialValue !== null) {
+            $command[] = '--value='.escapeshellarg($initialValue);
+        }
+
+        if ($charLimit !== null) {
+            $command[] = '--char-limit='.intval($charLimit);
+        }
+
+        if ($width !== null) {
+            $command[] = '--width='.intval($width);
+        }
+
+        if ($password) {
+            $command[] = '--password';
+        }
+
+        $output = [];
+        $resultCode = null;
+        $text = System::exec(implode(' ', $command), $output, $resultCode);
+
+        return $resultCode === 0 ? $text : false;
     }
 
     public static function spin(string $title = null, string $spinner = null)
