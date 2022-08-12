@@ -15,7 +15,7 @@ it('can confirm', function () {
 it('can confirm with message', function () {
     $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
-        ->withSomeOfArgs("gum confirm 'Are you sure?'")
+        ->withSomeOfArgs("gum confirm ". escapeshellarg('Are you sure?'))
         ->andReturns('');
 
     (new Gum)->confirm('Are you sure?');
@@ -24,16 +24,16 @@ it('can confirm with message', function () {
 it('can confirm with message and custom labels', function () {
     $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
-        ->withSomeOfArgs("gum confirm 'Are you sure?' --affirmative 'Yeah' --negative 'Nah'")
+        ->withSomeOfArgs("gum confirm " . escapeshellarg('Are you sure?') .' --affirmative ' . escapeshellarg('Yeah') .' --negative ' . escapeshellarg('Nah'))
         ->andReturns('');
 
-    (new Gum)->confirm('Are you sure?', 'Yeah', 'Nah');
-});
+        (new Gum)->confirm('Are you sure?', 'Yeah', 'Nah');
+    });
 
-it('can confirm with message and custom labels and default', function () {
-    $mock = Mockery::mock('alias:'.System::class);
-    $mock->shouldReceive('exec')
-        ->withSomeOfArgs("gum confirm 'Are you sure?' --affirmative 'Yeah' --negative 'Nah' --default=0")
+    it('can confirm with message and custom labels and default', function () {
+        $mock = Mockery::mock('alias:'.System::class);
+        $mock->shouldReceive('exec')
+        ->withSomeOfArgs("gum confirm " . escapeshellarg('Are you sure?') .' --affirmative ' . escapeshellarg('Yeah') .' --negative ' . escapeshellarg('Nah') . ' --default=0')
         ->andReturns('');
 
     (new Gum)->confirm('Are you sure?', 'Yeah', 'Nah', false);

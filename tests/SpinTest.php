@@ -19,7 +19,7 @@ it('can spin', function () {
 it('can spin with title', function () {
     $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('proc_open')
-        ->withSomeOfArgs("gum spin --title='This is my loading message...' {$this->foreverScript}")
+        ->withSomeOfArgs("gum spin --title=".escapeshellarg('This is my loading message...') . " {$this->foreverScript}")
         ->andReturns('');
 
     (new Gum)->spin('This is my loading message...');
@@ -28,7 +28,7 @@ it('can spin with title', function () {
 it('can spin with spinner', function () {
     $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('proc_open')
-        ->withSomeOfArgs("gum spin --spinner='monkey' {$this->foreverScript}")
+        ->withSomeOfArgs("gum spin --spinner=".escapeshellarg('monkey')." {$this->foreverScript}")
         ->andReturns('');
 
     (new Gum)->spin(null, 'monkey');
