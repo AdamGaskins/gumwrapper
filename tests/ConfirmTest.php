@@ -4,7 +4,7 @@ use GumWrapper\Gum;
 use GumWrapper\System;
 
 it('can confirm', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs('gum confirm')
         ->andReturns('');
@@ -13,7 +13,7 @@ it('can confirm', function () {
 });
 
 it('can confirm with message', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs("gum confirm 'Are you sure?'")
         ->andReturns('');
@@ -22,7 +22,7 @@ it('can confirm with message', function () {
 });
 
 it('can confirm with message and custom labels', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs("gum confirm 'Are you sure?' --affirmative 'Yeah' --negative 'Nah'")
         ->andReturns('');
@@ -31,7 +31,7 @@ it('can confirm with message and custom labels', function () {
 });
 
 it('can confirm with message and custom labels and default', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs("gum confirm 'Are you sure?' --affirmative 'Yeah' --negative 'Nah' --default=0")
         ->andReturns('');

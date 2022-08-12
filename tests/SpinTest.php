@@ -8,7 +8,7 @@ beforeEach(function () {
 });
 
 it('can spin', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('proc_open')
         ->withSomeOfArgs("gum spin {$this->foreverScript}")
         ->andReturns('');
@@ -17,7 +17,7 @@ it('can spin', function () {
 });
 
 it('can spin with title', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('proc_open')
         ->withSomeOfArgs("gum spin --title='This is my loading message...' {$this->foreverScript}")
         ->andReturns('');
@@ -26,7 +26,7 @@ it('can spin with title', function () {
 });
 
 it('can spin with spinner', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('proc_open')
         ->withSomeOfArgs("gum spin --spinner='monkey' {$this->foreverScript}")
         ->andReturns('');

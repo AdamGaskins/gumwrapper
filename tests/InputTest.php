@@ -4,7 +4,7 @@ use GumWrapper\Gum;
 use GumWrapper\System;
 
 it('can input', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs('gum input')
         ->andReturns('');
@@ -13,7 +13,7 @@ it('can input', function () {
 });
 
 it('includes options', function ($expect, $args) {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs('gum input'.$expect)
         ->andReturns('');

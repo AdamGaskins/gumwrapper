@@ -4,7 +4,7 @@ use GumWrapper\Gum;
 use GumWrapper\System;
 
 it('can choose', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs("gum choose 'apple' 'banana' 'pear'")
         ->andReturns('');
@@ -13,7 +13,7 @@ it('can choose', function () {
 });
 
 it('can have no limit', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs("gum choose --no-limit 'apple' 'banana' 'pear'")
         ->andReturns('');
@@ -22,7 +22,7 @@ it('can have no limit', function () {
 });
 
 it('can have a limit', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs("gum choose --limit 3 'apple' 'banana' 'pear'")
         ->andReturns('');
@@ -31,7 +31,7 @@ it('can have a limit', function () {
 });
 
 it('can have a height', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs("gum choose --height 15 'apple' 'banana' 'pear'")
         ->andReturns('');
@@ -40,7 +40,7 @@ it('can have a height', function () {
 });
 
 it('escapes arguments', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs("gum choose 'apple pie' 'banana' 'pear'")
         ->andReturns('');
@@ -49,7 +49,7 @@ it('escapes arguments', function () {
 });
 
 it('escapes arguments with characters', function () {
-    $mock = mock('alias:'.System::class);
+    $mock = Mockery::mock('alias:'.System::class);
     $mock->shouldReceive('exec')
         ->withSomeOfArgs("gum choose 'apple '\'' pie' 'banana' 'pear'")
         ->andReturns('');

@@ -19,8 +19,8 @@
         "php": "^7.4|^8.0"
     },
     "require-dev": {
-        "pestphp/pest": "^1.20",
-        "pestphp/pest-plugin-mock": "^1.0"
+        "mockery/mockery": "^1.5",
+        "pestphp/pest": "^1.20"
     },
     "autoload": {
         "psr-4": {
