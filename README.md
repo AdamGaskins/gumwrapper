@@ -88,3 +88,7 @@ $gum->spin(
     $spinner = 'pulse'
 );
 ```
+
+### Todo:
+- Write
+- Filter
