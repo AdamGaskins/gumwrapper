@@ -80,6 +80,10 @@ class BinManager
             return $base.'_Darwin_x86_64.tar.gz';
         }
 
-        return null;
+        if ($os === 'Linux') {
+            return $base.'_linux_x86_64.tar.gz';
+        }
+
+        throw new Exception("Platform $os $arch is not supported.");
     }
 }
