@@ -20,9 +20,9 @@ it('includes options', function ($expect, $args) {
 
     (new Gum)->input(...$args);
 })->with([
-    [" --placeholder=" . escapeshellarg('abc'), ['abc']],
-    [" --prompt=" . escapeshellarg('abc'), [null, 'abc']],
-    [" --value=" . escapeshellarg('abc'), [null, null, 'abc']],
+    [' --placeholder='.escapeshellarg('abc'), ['abc']],
+    [' --prompt='.escapeshellarg('abc'), [null, 'abc']],
+    [' --value='.escapeshellarg('abc'), [null, null, 'abc']],
     [' --char-limit=10', [null, null, null, 10]],
     [' --width=20', [null, null, null, null, 20]],
     ['', [null, null, null, null, null, false]],
