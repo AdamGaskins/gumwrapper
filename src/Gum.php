@@ -15,7 +15,7 @@ class Gum
     public static function choose($options, int $limit = null, int $height = null)
     {
         $options = array_map(function ($arg) {
-        return escapeshellarg($arg);
+            return escapeshellarg($arg);
         }, $options);
 
         $command = [self::executable(), 'choose'];
@@ -33,6 +33,7 @@ class Gum
         $output = [];
         $returnCode = null;
         $result = System::exec(implode(' ', $command), $output, $returnCode);
+
         return $returnCode === 0 ? $result : false;
     }
 
@@ -47,21 +48,10 @@ class Gum
     {
         $command = [self::executable(), 'confirm'];
 
-        if ($prompt !== null) {
-            $command[] = escapeshellarg($prompt);
-        }
-
-        if ($affirmativeText !== null) {
-            $command[] = '--affirmative '.escapeshellarg($affirmativeText);
-        }
-
-        if ($negativeText !== null) {
-            $command[] = '--negative '.escapeshellarg($negativeText);
-        }
-
-        if ($default !== null) {
-            $command[] = '--default='.((bool) $default ? '1' : '0');
-        }
+        static::add($command, $prompt, fn () => escapeshellarg($prompt));
+        static::add($command, $affirmativeText, fn () => '--affirmative '.escapeshellarg($affirmativeText));
+        static::add($command, $negativeText, fn () => '--negative '.escapeshellarg($negativeText));
+        static::add($command, $default, fn () => '--default='.((bool) $default ? '1' : '0'));
 
         $output = [];
         $resultCode = null;
@@ -83,29 +73,12 @@ class Gum
     {
         $command = [self::executable(), 'input'];
 
-        if ($placeholder !== null) {
-            $command[] = '--placeholder='.escapeshellarg($placeholder);
-        }
-
-        if ($prompt !== null) {
-            $command[] = '--prompt='.escapeshellarg($prompt);
-        }
-
-        if ($initialValue !== null) {
-            $command[] = '--value='.escapeshellarg($initialValue);
-        }
-
-        if ($charLimit !== null) {
-            $command[] = '--char-limit='.intval($charLimit);
-        }
-
-        if ($width !== null) {
-            $command[] = '--width='.intval($width);
-        }
-
-        if ($password) {
-            $command[] = '--password';
-        }
+        static::add($command, $placeholder, fn () => '--placeholder='.escapeshellarg($placeholder));
+        static::add($command, $prompt, fn () => '--prompt='.escapeshellarg($prompt));
+        static::add($command, $initialValue, fn () => '--value='.escapeshellarg($initialValue));
+        static::add($command, $charLimit, fn () => '--char-limit='.intval($charLimit));
+        static::add($command, $width, fn () => '--width='.intval($width));
+        static::add($command, fn () => $password, fn () => '--password');
 
         $output = [];
         $resultCode = null;
@@ -118,9 +91,7 @@ class Gum
     {
         $command = [self::executable(), 'spin'];
 
-        if ($title !== null) {
-            $command[] = '--title='.escapeshellarg($title);
-        }
+        static::add($command, $title, fn () => '--title='.escapeshellarg($title));
 
         if ($spinner !== null) {
             if (! in_array($spinner, ['line', 'dot', 'minidot', 'jump', 'pulse', 'points', 'globe', 'moon', 'monkey', 'meter', 'hamburger'])) {
@@ -148,5 +119,16 @@ class Gum
     public static function useExecutable($path)
     {
         static::$executable = $path;
+    }
+
+    protected static function add(&$array, $ifNotNull, callable $callable)
+    {
+        if (is_callable($ifNotNull) && ! $ifNotNull()) {
+            return;
+        } elseif ($ifNotNull === null) {
+            return;
+        }
+
+        $array[] = $callable();
     }
 }
