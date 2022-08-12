@@ -113,7 +113,11 @@ class Gum
 
     protected static function executable()
     {
-        return static::$executable ?? (__DIR__.'/../lib/gum/darwin/gum');
+        if (static::$executable) {
+            return static::$executable;
+        }
+
+        return BinManager::getBinaryPath();
     }
 
     public static function useExecutable($path)
