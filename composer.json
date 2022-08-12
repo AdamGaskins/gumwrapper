@@ -1,11 +1,12 @@
 {
-    "name": "adamgaskins/php-gum",
+    "name": "adamgaskins/gumwrapper",
     "description": "A php wrapper for Gum: a tool for glamorous shell scripts 🎀",
     "keywords": [
         "AdamGaskins",
-        "php-gum"
+        "gum",
+        "gumwrapper"
     ],
-    "homepage": "https://github.com/adamgaskins/php-gum",
+    "homepage": "https://github.com/adamgaskins/gumwrapper",
     "license": "MIT",
     "authors": [
         {
@@ -24,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PhpGum\\": "src"
+            "GumWrapper\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PhpGum\\Tests\\": "tests"
+            "GumWrapper\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -37,10 +38,10 @@
         "test-coverage": "vendor/bin/pest --coverage",
         "format": "vendor/bin/pint",
         "post-install-cmd": [
-            "PhpGum\\BinManager::installBinary"
+            "GumWrapper\\BinManager::installBinary"
         ],
         "post-update-cmd": [
-            "PhpGum\\BinManager::installBinary"
+            "GumWrapper\\BinManager::installBinary"
         ]
     },
     "config": {

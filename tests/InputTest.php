@@ -1,7 +1,7 @@
 <?php
 
-use PhpGum\Gum;
-use PhpGum\System;
+use GumWrapper\Gum;
+use GumWrapper\System;
 
 it('can input', function () {
     $mock = mock('alias:'.System::class);

@@ -1,7 +1,7 @@
 <?php
 
-use PhpGum\Gum;
-use PhpGum\System;
+use GumWrapper\Gum;
+use GumWrapper\System;
 
 beforeEach(function () {
     $this->foreverScript = '-- php -r "while(true) sleep(100);"';

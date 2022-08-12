@@ -1,5 +1,5 @@
 <?php
 
-use PhpGum\Gum;
+use GumWrapper\Gum;
 
 Gum::useExecutable('gum');

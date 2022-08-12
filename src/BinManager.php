@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpGum;
+namespace GumWrapper;
 
 use Composer\Script\Event;
 use ZipArchive;
