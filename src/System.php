@@ -8,7 +8,7 @@ namespace GumWrapper;
  */
 class System
 {
-    public function exec(string $command, &$output = null, &$resultCode = null): string|false
+    public function exec(string $command, &$output = null, &$resultCode = null)
     {
         return exec($command, $output, $resultCode);
     }
