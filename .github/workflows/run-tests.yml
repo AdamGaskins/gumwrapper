@@ -9,10 +9,13 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest, windows-latest]
-        php: [7.4, 8.0, 8.1]
-        stability: [prefer-lowest, prefer-stable]
+        arch: [X64]
+        php: [7.4, 8.1]
+        include:
+          - { os: macOS, arch: X64, php: 8.1 }
+          - { os: macOS, arch: ARM64, php: 8.1 }
 
-    name: P${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    name: P${{ matrix.php }} - ${{ matrix.os }} ${{ matrix.arch }}
 
     steps:
       - name: Checkout code
