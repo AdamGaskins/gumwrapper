@@ -35,13 +35,7 @@
     "scripts": {
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
-        "format": "vendor/bin/pint",
-        "post-install-cmd": [
-            "GumWrapper\\BinManager::installBinary"
-        ],
-        "post-update-cmd": [
-            "GumWrapper\\BinManager::installBinary"
-        ]
+        "format": "vendor/bin/pint"
     },
     "config": {
         "sort-packages": true,

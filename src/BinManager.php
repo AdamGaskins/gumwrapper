@@ -2,7 +2,6 @@
 
 namespace GumWrapper;
 
-use Composer\Script\Event;
 use ZipArchive;
 
 /** @internal */
@@ -10,30 +9,28 @@ class BinManager
 {
     public const GUM_VERSION = '0.4.0';
 
-    public static function installBinary(Event $event)
+    public function installBinary()
     {
-        $config = $event->getComposer()->getConfig();
-        $binaryFolder = $config->get('bin-dir');
-        $binaryPath = $binaryFolder.'/'.self::getBinaryName();
+        $binaryFolder = static::getBinaryFolder();
 
-        if (file_exists($binaryPath) && mb_stripos(exec($binaryPath.' --version'), 'v'.self::GUM_VERSION.' ') !== false) {
-            echo 'Gum version '.self::GUM_VERSION." already downloaded.\n";
-
-            return;
+        $binary = $binaryFolder.self::getBinaryName();
+        if (file_exists($binary)) {
+            $version = exec($binary.' --version');
+            if ($version && mb_stripos($version, 'v'.self::GUM_VERSION.' ') !== false) {
+                return true;
+            }
         }
-
-        echo 'Downloading gum v'.self::GUM_VERSION." binary.\n";
 
         $tmpDir = sys_get_temp_dir().DIRECTORY_SEPARATOR.mt_rand();
         mkdir($tmpDir);
 
         $url = static::getBinaryUrl();
-        echo "Downloading $url...\n";
-
         $compressedFile = $tmpDir.basename(parse_url($url, PHP_URL_PATH));
         file_put_contents($compressedFile, file_get_contents($url));
 
-        echo "Extracting binary...\n";
+        if (! file_exists($binaryFolder)) {
+            mkdir($binaryFolder);
+        }
 
         if (mb_stripos($compressedFile, '.tar.gz') !== false) {
             exec('tar -xf '.escapeshellarg($compressedFile).' -C '.escapeshellarg($binaryFolder).' gum');
@@ -43,14 +40,24 @@ class BinManager
             $zip->extractTo($binaryFolder, 'gum.exe');
             $zip->close();
         }
+
+        unlink($compressedFile);
+        rmdir($tmpDir);
     }
 
-    public static function getBinaryPath()
+    public function getBinaryPath()
     {
-        return implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'vendor', 'bin', self::getBinaryName()]);
+        return static::getBinaryFolder().static::getBinaryName();
     }
 
-    public static function getBinaryName()
+    public function getBinaryFolder()
+    {
+        $d = DIRECTORY_SEPARATOR;
+
+        return realpath(__DIR__.$d.'..').$d.'lib'.$d;
+    }
+
+    public function getBinaryName()
     {
         if (PHP_OS_FAMILY === 'Windows') {
             return 'gum.exe';
@@ -59,7 +66,7 @@ class BinManager
         return 'gum';
     }
 
-    protected static function getBinaryUrl()
+    protected function getBinaryUrl()
     {
         $os = PHP_OS_FAMILY;
         $arch = php_uname('m');

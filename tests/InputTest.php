@@ -3,22 +3,26 @@
 use GumWrapper\Gum;
 use GumWrapper\System;
 
+afterEach(function() {
+    Mockery::close();
+});
+
 it('can input', function () {
-    $mock = Mockery::mock('alias:'.System::class);
-    $mock->shouldReceive('exec')
+    $system = Mockery::mock(System::class);
+    $system->shouldReceive('exec')
         ->withSomeOfArgs('gum input')
         ->andReturns('');
 
-    (new Gum)->input();
+    gum(true, $system)->input();
 });
 
 it('includes options', function ($expect, $args) {
-    $mock = Mockery::mock('alias:'.System::class);
-    $mock->shouldReceive('exec')
+    $system = Mockery::mock(System::class);
+    $system->shouldReceive('exec')
         ->withSomeOfArgs('gum input'.$expect)
         ->andReturns('');
 
-    (new Gum)->input(...$args);
+    gum(true, $system)->input(...$args);
 })->with([
     [' --placeholder='.escapeshellarg('abc'), ['abc']],
     [' --prompt='.escapeshellarg('abc'), [null, 'abc']],

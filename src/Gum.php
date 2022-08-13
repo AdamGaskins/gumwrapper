@@ -6,19 +6,35 @@ use Exception;
 
 class Gum
 {
+    protected $executable = null;
+
+    protected $system = null;
+
+    protected $binManager = null;
+
+    public function __construct($executable = null, $system = null, $binManager = null)
+    {
+        $this->executable = $executable;
+
+        $this->system = $system ?? new System;
+
+        $this->binManager = ($binManager ?? new BinManager);
+        $this->binManager->installBinary();
+    }
+
     /**
      * @param  array<string>  $options
      * @param  int|null  $limit
      * @param  int|null  $height
      * @return string|false
      */
-    public static function choose($options, int $limit = null, int $height = null)
+    public function choose($options, int $limit = null, int $height = null)
     {
         $options = array_map(function ($arg) {
             return escapeshellarg($arg);
         }, $options);
 
-        $command = [self::executable(), 'choose'];
+        $command = [$this->executable(), 'choose'];
 
         if ($limit !== null) {
             $command[] = $limit < 1 ? '--no-limit' : ('--limit '.intval($limit));
@@ -32,7 +48,7 @@ class Gum
 
         $output = [];
         $returnCode = null;
-        $result = System::exec(implode(' ', $command), $output, $returnCode);
+        $result = $this->system->exec(implode(' ', $command), $output, $returnCode);
 
         return $returnCode === 0 ? $result : false;
     }
@@ -44,18 +60,18 @@ class Gum
      * @param  bool|null  $default
      * @return bool
      */
-    public static function confirm(string $prompt = null, string $affirmativeText = null, string $negativeText = null, bool $default = null)
+    public function confirm(string $prompt = null, string $affirmativeText = null, string $negativeText = null, bool $default = null)
     {
-        $command = [self::executable(), 'confirm'];
+        $command = [$this->executable(), 'confirm'];
 
-        static::add($command, $prompt, fn () => escapeshellarg($prompt));
-        static::add($command, $affirmativeText, fn () => '--affirmative '.escapeshellarg($affirmativeText));
-        static::add($command, $negativeText, fn () => '--negative '.escapeshellarg($negativeText));
-        static::add($command, $default, fn () => '--default='.((bool) $default ? '1' : '0'));
+        $this->add($command, $prompt, fn () => escapeshellarg($prompt));
+        $this->add($command, $affirmativeText, fn () => '--affirmative '.escapeshellarg($affirmativeText));
+        $this->add($command, $negativeText, fn () => '--negative '.escapeshellarg($negativeText));
+        $this->add($command, $default, fn () => '--default='.((bool) $default ? '1' : '0'));
 
         $output = [];
         $resultCode = null;
-        System::exec(implode(' ', $command), $output, $resultCode);
+        $this->system->exec(implode(' ', $command), $output, $resultCode);
 
         return $resultCode === 0;
     }
@@ -69,29 +85,29 @@ class Gum
      * @param  bool|null  $password
      * @return string|false
      */
-    public static function input(string $placeholder = null, string $prompt = null, string $initialValue = null, int $charLimit = null, int $width = null, bool $password = null)
+    public function input(string $placeholder = null, string $prompt = null, string $initialValue = null, int $charLimit = null, int $width = null, bool $password = null)
     {
-        $command = [self::executable(), 'input'];
+        $command = [$this->executable(), 'input'];
 
-        static::add($command, $placeholder, fn () => '--placeholder='.escapeshellarg($placeholder));
-        static::add($command, $prompt, fn () => '--prompt='.escapeshellarg($prompt));
-        static::add($command, $initialValue, fn () => '--value='.escapeshellarg($initialValue));
-        static::add($command, $charLimit, fn () => '--char-limit='.intval($charLimit));
-        static::add($command, $width, fn () => '--width='.intval($width));
-        static::add($command, fn () => $password, fn () => '--password');
+        $this->add($command, $placeholder, fn () => '--placeholder='.escapeshellarg($placeholder));
+        $this->add($command, $prompt, fn () => '--prompt='.escapeshellarg($prompt));
+        $this->add($command, $initialValue, fn () => '--value='.escapeshellarg($initialValue));
+        $this->add($command, $charLimit, fn () => '--char-limit='.intval($charLimit));
+        $this->add($command, $width, fn () => '--width='.intval($width));
+        $this->add($command, fn () => $password, fn () => '--password');
 
         $output = [];
         $resultCode = null;
-        $text = System::exec(implode(' ', $command), $output, $resultCode);
+        $text = $this->system->exec(implode(' ', $command), $output, $resultCode);
 
         return $resultCode === 0 ? $text : false;
     }
 
-    public static function spin(string $title = null, string $spinner = null)
+    public function spin(string $title = null, string $spinner = null)
     {
-        $command = [self::executable(), 'spin'];
+        $command = [$this->executable(), 'spin'];
 
-        static::add($command, $title, fn () => '--title='.escapeshellarg($title));
+        $this->add($command, $title, fn () => '--title='.escapeshellarg($title));
 
         if ($spinner !== null) {
             if (! in_array($spinner, ['line', 'dot', 'minidot', 'jump', 'pulse', 'points', 'globe', 'moon', 'monkey', 'meter', 'hamburger'])) {
@@ -104,28 +120,26 @@ class Gum
         $command[] = '-- php -r "while(true) sleep(100);"';
 
         $pipes = [];
-        $r = System::proc_open(implode(' ', $command), [STDIN, STDOUT, STDOUT], $pipes);
+        $r = $this->system->proc_open(implode(' ', $command), [STDIN, STDOUT, STDOUT], $pipes);
 
         return new Spinner($r);
     }
 
-    protected static $executable = null;
-
-    protected static function executable()
+    public function version()
     {
-        if (static::$executable) {
-            return static::$executable;
+        return $this->system->exec($this->executable() . ' --version');
+    }
+
+    protected function executable()
+    {
+        if ($this->executable) {
+            return $this->executable;
         }
 
-        return BinManager::getBinaryPath();
+        return $this->binManager->getBinaryPath();
     }
 
-    public static function useExecutable($path)
-    {
-        static::$executable = $path;
-    }
-
-    protected static function add(&$array, $ifNotNull, callable $callable)
+    protected function add(&$array, $ifNotNull, callable $callable)
     {
         if (is_callable($ifNotNull) && ! $ifNotNull()) {
             return;
