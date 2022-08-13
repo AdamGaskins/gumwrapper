@@ -8,14 +8,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        arch: [X64]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         php: [7.4, 8.1]
-        include:
-          - { os: macOS, arch: X64, php: 8.1 }
-          - { os: macOS, arch: ARM64, php: 8.1 }
 
-    name: P${{ matrix.php }} - ${{ matrix.os }} ${{ matrix.arch }}
+    name: P${{ matrix.php }} - ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -34,7 +30,7 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - name: Install dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+        run: composer update --prefer-stable --prefer-dist --no-interaction
 
       - name: Execute tests
         run: vendor/bin/pest
