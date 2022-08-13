@@ -127,7 +127,7 @@ class Gum
 
     public function version()
     {
-        return $this->system->exec($this->executable() . ' --version');
+        return $this->system->exec($this->executable().' --version');
     }
 
     protected function executable()

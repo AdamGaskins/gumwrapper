@@ -2,7 +2,7 @@
 
 use GumWrapper\BinManager;
 
-it('downloads binary for this platform', function() {
+it('downloads binary for this platform', function () {
     $binPath = (new BinManager)->getBinaryPath();
     if (file_exists($binPath)) {
         unlink($binPath);
@@ -13,9 +13,9 @@ it('downloads binary for this platform', function() {
     gum();
 
     expect(file_exists($binPath))->toBeTrue();
-    expect(exec($binPath . ' --version'))
+    expect(exec($binPath.' --version'))
         ->toBeString()
-        ->toContain('gum version v' . BinManager::GUM_VERSION);
+        ->toContain('gum version v'.BinManager::GUM_VERSION);
 });
 
 it('can get version', function () {
@@ -23,5 +23,5 @@ it('can get version', function () {
 
     expect($version)
         ->toBeString()
-        ->toContain('gum version v' . BinManager::GUM_VERSION);
+        ->toContain('gum version v'.BinManager::GUM_VERSION);
 });

@@ -1,9 +1,8 @@
 <?php
 
-use GumWrapper\Gum;
 use GumWrapper\System;
 
-afterEach(function() {
+afterEach(function () {
     Mockery::close();
 });
 
